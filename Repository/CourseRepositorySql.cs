@@ -69,13 +69,12 @@ namespace Project.Repository
                 @"
 					SELECT CourseTitle
 						 , CourseIntroduction
-						 , ClassTime_Week
-                         , ClassTime_Time
+						 , Week
+                         , Time
 						 , ProfessorName
 						 , RequiredSubjects
 						 , StudentNumberLimit
 						 , RequiredStudentNumber
-						 , IsAuditCourse
 					  FROM Course
                 ", commandWhere));
 

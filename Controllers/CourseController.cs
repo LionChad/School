@@ -35,6 +35,7 @@ namespace Project.Controllers
                 if (IsAuthentication())
                 {
                     if (!string.IsNullOrEmpty(model.CourseID) &&
+                        !string.IsNullOrEmpty(model.CourseTitle) &&
                         !string.IsNullOrEmpty(model.CourseIntroduction) &&
                         !string.IsNullOrEmpty(model.Week) &&
                         !string.IsNullOrEmpty(model.Time) &&
@@ -73,15 +74,12 @@ namespace Project.Controllers
                 if (IsAuthentication())
                 {
                     if (!string.IsNullOrEmpty(model.CourseID) &&
-                         (!string.IsNullOrEmpty(model.CourseIntroduction) ||
+                         (!string.IsNullOrEmpty(model.CourseTitle) ||
+                         !string.IsNullOrEmpty(model.CourseIntroduction) ||
                          !string.IsNullOrEmpty(model.Week) ||
                          !string.IsNullOrEmpty(model.Time) ||
                          !string.IsNullOrEmpty(model.ProfessorName) ||
                          !string.IsNullOrEmpty(model.RequiredSubjects) ||
-                         !string.IsNullOrEmpty(model.CourseID) ||
-                         !string.IsNullOrEmpty(model.CourseID) ||
-                         !string.IsNullOrEmpty(model.CourseID) ||
-                         !string.IsNullOrEmpty(model.CourseID) ||
                          model.StudentNumberLimit != 0 ||
                          model.RequiredStudentNumber != 0))
                     {
