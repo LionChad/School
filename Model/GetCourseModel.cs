@@ -1,4 +1,5 @@
 ﻿using Project.Repository;
+using Project.Util;
 
 namespace Project.Model
 {
@@ -10,13 +11,13 @@ namespace Project.Model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public List<CourseDataModel> GetCourseList(CourseDataModel model)
+        public GetCourseListResponseModel GetCourseList(CourseDataModel model)
         {
-            var result = new List<CourseDataModel>();
+            var result = new GetCourseListResponseModel();
 
             try
             {
-                result = new CourseRepository().GetCourseList(model);
+                result.Data = new CourseRepository().GetCourseList(model);
 
                 if (model.CourseID != null &&
                     model.CourseTitle != null &&
@@ -28,31 +29,36 @@ namespace Project.Model
                     model.StudentNumberLimit != 0 &&
                     model.RequiredStudentNumber != 0)
                 {
-                    result.Add(new CourseDataModel
+                    result.Data.Add(new CourseDataModel
                     {
                         CourseTitle = "沒有傳入會是全查，會是所有課程都顯示",
                     });
-                    result.Add(new CourseDataModel
+                    result.Data.Add(new CourseDataModel
                     {
                         CourseTitle = "A課程",
                     });
-                    result.Add(new CourseDataModel
+                    result.Data.Add(new CourseDataModel
                     {
                         CourseTitle = "B課程...",
                     });
                 }
                 else
                 {
-                    result.Add(new CourseDataModel
+                    result.Data.Add(new CourseDataModel
                     {
                         CourseTitle = "有傳入則透過傳入來判斷",
                     });
-                    result.Add(model);
+                    result.Data.Add(model);
                 }
+
+                result.Code = (int)ReturnData.EnumReturnMessage.Success;
+                result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                //紀錄LOG
+                //紀錄Log
+                result.Code = (int)ReturnData.EnumReturnMessage.SystemError;
+                result.Msg = ReturnData.EnumReturnMessage.SystemError.GetEnumDesc();
             }
 
             return result;
@@ -65,21 +71,27 @@ namespace Project.Model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseModel InsertCourse(CourseDataModel model)
+        public EditResponseModel InsertCourse(CourseDataModel model)
         {
-            var response = new ResponseModel();
+            var result = new EditResponseModel();
 
             try
             {
-                response.isSuccess = new CourseRepository().InsertCourse(model);
+                if (new CourseRepository().InsertCourse(model))
+                {
+                    result.Data = true;
+                    result.Code = (int)ReturnData.EnumReturnMessage.Success;
+                    result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
+                }
             }
             catch (Exception ex)
             {
                 //紀錄Log
-                response.msg = ex.Message;
+                result.Code = (int)ReturnData.EnumReturnMessage.SystemError;
+                result.Msg = ReturnData.EnumReturnMessage.SystemError.GetEnumDesc();
             }
 
-            return response;
+            return result;
         }
         #endregion
 
@@ -95,7 +107,7 @@ namespace Project.Model
 
             try
             {
-                response.isSuccess = new CourseRepository().UpdateCourse(model);
+                response.code = new CourseRepository().UpdateCourse(model);
             }
             catch (Exception ex)
             {
@@ -119,7 +131,7 @@ namespace Project.Model
 
             try
             {
-                response.isSuccess = new CourseRepository().DeleteCourse(model);
+                response.code = new CourseRepository().DeleteCourse(model);
             }
             catch (Exception ex)
             {

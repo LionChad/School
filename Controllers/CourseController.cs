@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Model;
+using Project.Util;
 
 namespace Project.Controllers
 {
@@ -8,7 +9,7 @@ namespace Project.Controllers
     public class CourseController : ControllerBase
     {
         [HttpGet]
-        public List<CourseDataModel> Get(string courseID, string courseTitle, string week, string time, string professorName, string requiredSubjects, bool isNotAuditCourse)
+        public GetCourseListResponseModel Get(string courseID, string courseTitle, string week, string time, string professorName, string requiredSubjects, bool isNotAuditCourse)
         {
             CourseDataModel model = new CourseDataModel()
             {
@@ -26,52 +27,51 @@ namespace Project.Controllers
         }
 
         [HttpPost]
-        public ResponseModel POST(CourseDataModel model)
+        public EditResponseModel POST(CourseDataModel model)
         {
-            var reponse = new ResponseModel();
+            var reponse = new EditResponseModel();
 
-            if (IsAuthorization())
+            if (IsMemberVertify())
             {
-                if (IsAuthentication())
+                if (IsAuthenticationVertify())
                 {
                     if (!string.IsNullOrEmpty(model.CourseID) &&
                         !string.IsNullOrEmpty(model.CourseTitle) &&
-                        !string.IsNullOrEmpty(model.CourseIntroduction) &&
                         !string.IsNullOrEmpty(model.Week) &&
                         !string.IsNullOrEmpty(model.Time) &&
-                        !string.IsNullOrEmpty(model.ProfessorName) &&
-                        !string.IsNullOrEmpty(model.RequiredSubjects) &&
-                        model.StudentNumberLimit != 0 &&
-                        model.RequiredStudentNumber != 0)
+                        !string.IsNullOrEmpty(model.ProfessorName))
                     {
                         reponse = new GetCourseModel().InsertCourse(model);
                     }
                     else
                     {
-                        reponse.msg = "參數驗證不通過，這就不一個個列少哪個參數了";
+                        reponse.Code = (int)ReturnData.EnumReturnMessage.InputNotComplete;
+                        reponse.Msg = ReturnData.EnumReturnMessage.InputNotComplete.GetEnumDesc();
                     }
                 }
                 else
                 {
-                    reponse.msg = "權限驗證不通過";
+                    reponse.Code = (int)ReturnData.EnumReturnMessage.AuthenticationVertifyFail;
+                    reponse.Msg = ReturnData.EnumReturnMessage.AuthenticationVertifyFail.GetEnumDesc();
                 }
             }
             else
             {
-                reponse.msg = "身分驗證不通過";
+                reponse.Code = (int)ReturnData.EnumReturnMessage.MemberVertifyFail;
+                reponse.Msg = ReturnData.EnumReturnMessage.MemberVertifyFail.GetEnumDesc();
             }
 
             return reponse;
         }
 
         [HttpPatch]
-        public ResponseModel PATCH(CourseDataModel model)
+        public EditResponseModel PATCH(CourseDataModel model)
         {
-            var reponse = new ResponseModel();
+            var reponse = new EditResponseModel();
 
-            if (IsAuthorization())
+            if (IsMemberVertify())
             {
-                if (IsAuthentication())
+                if (IsAuthenticationVertify())
                 {
                     if (!string.IsNullOrEmpty(model.CourseID) &&
                          (!string.IsNullOrEmpty(model.CourseTitle) ||
@@ -79,38 +79,39 @@ namespace Project.Controllers
                          !string.IsNullOrEmpty(model.Week) ||
                          !string.IsNullOrEmpty(model.Time) ||
                          !string.IsNullOrEmpty(model.ProfessorName) ||
-                         !string.IsNullOrEmpty(model.RequiredSubjects) ||
-                         model.StudentNumberLimit != 0 ||
-                         model.RequiredStudentNumber != 0))
+                         !string.IsNullOrEmpty(model.RequiredSubjects)))
                     {
                         reponse = new GetCourseModel().UpdateCourse(model);
                     }
                     else
                     {
-                        reponse.msg = "參數驗證不通過，沒有CourseID或需更新的資料";
+                        reponse.Code = (int)ReturnData.EnumReturnMessage.InputNotComplete;
+                        reponse.Msg = ReturnData.EnumReturnMessage.InputNotComplete.GetEnumDesc();
                     }
                 }
                 else
                 {
-                    reponse.msg = "權限驗證不通過";
+                    reponse.Code = (int)ReturnData.EnumReturnMessage.AuthenticationVertifyFail;
+                    reponse.Msg = ReturnData.EnumReturnMessage.AuthenticationVertifyFail.GetEnumDesc();
                 }
             }
             else
             {
-                reponse.msg = "身分驗證不通過";
+                reponse.Code = (int)ReturnData.EnumReturnMessage.MemberVertifyFail;
+                reponse.Msg = ReturnData.EnumReturnMessage.MemberVertifyFail.GetEnumDesc();
             }
 
             return reponse;
         }
 
         [HttpPatch]
-        public ResponseModel DELETE(CourseDataModel model)
+        public EditResponseModel DELETE(CourseDataModel model)
         {
-            var reponse = new ResponseModel();
+            var reponse = new EditResponseModel();
 
-            if (IsAuthorization())
+            if (IsMemberVertify())
             {
-                if (IsAuthentication())
+                if (IsAuthenticationVertify())
                 {
                     if (model.CourseID != null)
                     {
@@ -118,42 +119,45 @@ namespace Project.Controllers
                     }
                     else
                     {
-                        reponse.msg = "沒有CourseID。";
+                        reponse.Code = (int)ReturnData.EnumReturnMessage.InputNotComplete;
+                        reponse.Msg = ReturnData.EnumReturnMessage.InputNotComplete.GetEnumDesc();
                     }
                 }
                 else
                 {
-                    reponse.msg = "權限驗證不通過";
+                    reponse.Code = (int)ReturnData.EnumReturnMessage.AuthenticationVertifyFail;
+                    reponse.Msg = ReturnData.EnumReturnMessage.AuthenticationVertifyFail.GetEnumDesc();
                 }
             }
             else
             {
-                reponse.msg = "身分驗證不通過";
+                reponse.Code = (int)ReturnData.EnumReturnMessage.MemberVertifyFail;
+                reponse.Msg = ReturnData.EnumReturnMessage.MemberVertifyFail.GetEnumDesc();
             }
 
             return reponse;
         }
 
         /// <summary>
-        /// 身份驗證
+        /// 會員驗證
         /// </summary>
         /// <returns></returns>
-        private bool IsAuthorization()
+        private bool IsMemberVertify()
         {
-            bool isAuthorization = false;
-            isAuthorization = true;
-            return isAuthorization;
+            bool isMemberVertify = false;
+            isMemberVertify = true;
+            return isMemberVertify;
         }
 
         /// <summary>
         /// 授權驗證
         /// </summary>
         /// <returns></returns>
-        private bool IsAuthentication()
+        private bool IsAuthenticationVertify()
         {
-            bool isAuthentication = false;
-            isAuthentication = true;
-            return isAuthentication;
+            bool isAuthenticationVertify = false;
+            isAuthenticationVertify = true;
+            return isAuthenticationVertify;
         }
     }
 }

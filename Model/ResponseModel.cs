@@ -6,12 +6,12 @@
         /// <summary>
         /// 回傳訊息
         /// </summary>
-        public string msg { get; set; }
+        public string Msg { get; set; }
 
         /// <summary>
         /// 是否成功
         /// </summary>
-        public bool isSuccess { get; set; }
+        public int Code { get; set; }
     }
     #endregion
 }
