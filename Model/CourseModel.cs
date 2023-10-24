@@ -137,6 +137,11 @@ namespace Project.Model
                     result.Code = (int)ReturnData.EnumReturnMessage.Success;
                     result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
                 }
+                else
+                {
+                    result.Code = (int)ReturnData.EnumReturnMessage.Fail;
+                    result.Msg = ReturnData.EnumReturnMessage.Fail.GetEnumDesc();
+                }
             }
             catch (Exception ex)
             {
@@ -167,6 +172,11 @@ namespace Project.Model
                     result.Code = (int)ReturnData.EnumReturnMessage.Success;
                     result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
                 }
+                else
+                {
+                    result.Code = (int)ReturnData.EnumReturnMessage.Fail;
+                    result.Msg = ReturnData.EnumReturnMessage.Fail.GetEnumDesc();
+                }
             }
             catch (Exception ex)
             {
@@ -196,6 +206,11 @@ namespace Project.Model
                     result.Data = true;
                     result.Code = (int)ReturnData.EnumReturnMessage.Success;
                     result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
+                }
+                else
+                {
+                    result.Code = (int)ReturnData.EnumReturnMessage.Fail;
+                    result.Msg = ReturnData.EnumReturnMessage.Fail.GetEnumDesc();
                 }
             }
             catch (Exception ex)

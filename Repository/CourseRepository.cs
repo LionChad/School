@@ -14,30 +14,29 @@ namespace Project.Repository
         public List<CourseDataModel> GetCourseList(CourseDataModel model)
         {
             var result = new List<CourseDataModel>();
-            using (SqlConnection conn = new SqlConnection("DB連線字串"))
-            {
+            //using (SqlConnection conn = new SqlConnection("DB連線字串"))
+            //{
                 try
                 {
-                    conn.Open();
+                    //conn.Open();
 
                     var getCourseListSql = GetCourseListSql(model);
-
-                    using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                //...SQL讀取出來
-                            }
-                        }
-                    }
+                    //using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
+                    //{
+                    //    using (SqlDataReader reader = command.ExecuteReader())
+                    //    {
+                    //        while (reader.Read())
+                    //        {
+                    //            //...SQL讀取出來
+                    //        }
+                    //    }
+                    //}
                 }
                 catch (Exception ex)
                 {
                     //紀錄LOG
                 }
-            }
+            //}
             return result;
         }
         #endregion
@@ -52,30 +51,30 @@ namespace Project.Repository
         {
             bool isSuccess = false;
 
-            using (SqlConnection conn = new SqlConnection("DB連線字串"))
-            {
+            //using (SqlConnection conn = new SqlConnection("DB連線字串"))
+            //{
                 try
                 {
-                    conn.Open();
+                    //conn.Open();
 
                     var getCourseListSql = InsertCourseSql(model);
-
-                    using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                isSuccess = true;
-                            }
-                        }
-                    }
+                    isSuccess = true;
+                    //using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
+                    //{
+                    //    using (SqlDataReader reader = command.ExecuteReader())
+                    //    {
+                    //        while (reader.Read())
+                    //        {
+                    //            isSuccess = true;
+                    //        }
+                    //    }
+                    //}
                 }
                 catch (Exception ex)
                 {
                     //紀錄LOG
                 }
-            }
+            //}
             return isSuccess;
         }
         #endregion
@@ -90,27 +89,28 @@ namespace Project.Repository
         {
             bool isSuccess = false;
 
-            using (SqlConnection conn = new SqlConnection("DB連線字串"))
-            {
+            //using (SqlConnection conn = new SqlConnection("DB連線字串"))
+            //{
                 try
                 {
-                    conn.Open();
+                    //conn.Open();
 
                     var getCourseListSql = UpdateCourseSql(model);
+                    isSuccess = true;
 
-                    using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            isSuccess = true;
-                        }
-                    }
+                    //using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
+                    //{
+                    //    using (SqlDataReader reader = command.ExecuteReader())
+                    //    {
+                    //        isSuccess = true;
+                    //    }
+                    //}
                 }
                 catch (Exception ex)
                 {
                     //紀錄LOG
                 }
-            }
+            //}
             return isSuccess;
         }
         #endregion
@@ -125,30 +125,31 @@ namespace Project.Repository
         {
             bool isSuccess = false;
 
-            using (SqlConnection conn = new SqlConnection("DB連線字串"))
-            {
+            //using (SqlConnection conn = new SqlConnection("DB連線字串"))
+            //{
                 try
                 {
-                    conn.Open();
+                    //conn.Open();
 
                     var getCourseListSql = DeleteCourseSql(model);
+                    isSuccess = true;
 
-                    using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
-                    {
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            while (reader.Read())
-                            {
-                                isSuccess = true;
-                            }
-                        }
-                    }
+                    //using (SqlCommand command = new SqlCommand(getCourseListSql.GetSqlString(), conn))
+                    //{
+                    //    using (SqlDataReader reader = command.ExecuteReader())
+                    //    {
+                    //        while (reader.Read())
+                    //        {
+                    //            isSuccess = true;
+                    //        }
+                    //    }
+                    //}
                 }
                 catch (Exception ex)
                 {
                     //紀錄LOG
                 }
-            }
+            //}
             return isSuccess;
         }
         #endregion

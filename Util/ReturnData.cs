@@ -15,6 +15,8 @@ namespace Project.Util
             MemberVertifyFail = 1000,
             [Description("授權驗證失敗")]
             AuthenticationVertifyFail = 2000,
+            [Description("失敗")]
+            Fail = 9998,
             [Description("SchoolAPI系統異常")]
             SystemError = 9999
         }

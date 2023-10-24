@@ -85,7 +85,7 @@ namespace Project.Repository
             }
             if (leftJoinCommandTime.Any())
             {
-                leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_Time ON Course.CourseID = Course_Time.CourseID " + string.Join(Environment.NewLine + " AND ", leftJoinCommandTime));
+                leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_Time ON Course.CourseID = Course_Time.CourseID AND " + string.Join(Environment.NewLine + " AND ", leftJoinCommandTime));
             }
             else if (commandTime.Length > 0)
             {
