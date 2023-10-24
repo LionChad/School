@@ -18,8 +18,8 @@ namespace Project.Repository
             StringBuilder leftJoinCommandWhere = new StringBuilder();
             string requiredSubjects = string.Empty;
             #region WHERE
-
-            if (model.CourseID != null)
+            
+            if (!string.IsNullOrEmpty(model.CourseID))
             {
                 commandWhereList.Add("CourseID = @CourseID");
                 result.SqlParams.Add(model.CourseTitle);
@@ -36,15 +36,29 @@ namespace Project.Repository
             }
             if (model.Week != null)
             {
-                leftJoinCommandTime.Add("Course_Time.Week = @Week");
-                commandTime.AppendLine(", Course_Time.Week");
-                result.SqlParams.Add(model.Week);
+                if (model.Week == string.Empty)
+                {
+                    commandTime.AppendLine(", Course_Time.Week");
+                }
+                else
+                {
+                    leftJoinCommandTime.Add("Course_Time.Week = @Week");
+                    commandTime.AppendLine(", Course_Time.Week");
+                    result.SqlParams.Add(model.Week);
+                }
             }
             if (model.Time != null)
             {
-                leftJoinCommandTime.Add("Course_Time.Time = @Time");
-                commandTime.AppendLine(", Course_Time.Time");
-                result.SqlParams.Add(model.Time);
+                if (model.Week == string.Empty)
+                {
+                    commandTime.AppendLine(", Course_Time.Time");
+                }
+                else
+                {
+                    leftJoinCommandTime.Add("Course_Time.Time = @Time");
+                    commandTime.AppendLine(", Course_Time.Time");
+                    result.SqlParams.Add(model.Time);
+                }
             }
             if (model.ProfessorName != null)
             {
@@ -53,19 +67,17 @@ namespace Project.Repository
             }
             if (model.RequiredSubjects != null)
             {
-                leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_RequiredSubjects ON Course.CourseID = Course_RequiredSubjects.CourseID AND Course_RequiredSubjects.RequiredSubjects = @RequiredSubjects");
-                requiredSubjects = ", Course_RequiredSubjects.RequiredSubjects";
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (model.StudentNumberLimit != 0)
-            {
-                commandWhereList.Add("StudentNumberLimit = @StudentNumberLimit");
-                result.SqlParams.Add(model.StudentNumberLimit);
-            }
-            if (model.RequiredStudentNumber != 0)
-            {
-                commandWhereList.Add("RequiredStudentNumber = @RequiredStudentNumber");
-                result.SqlParams.Add(model.RequiredSubjects);
+                if (model.Week == string.Empty)
+                {
+                    leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_RequiredSubjects ON Course.CourseID = Course_RequiredSubjects.CourseID ");
+                    requiredSubjects = ", Course_RequiredSubjects.RequiredSubjects";
+                }
+                else
+                {
+                    leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_RequiredSubjects ON Course.CourseID = Course_RequiredSubjects.CourseID AND Course_RequiredSubjects.RequiredSubjects = @RequiredSubjects");
+                    requiredSubjects = ", Course_RequiredSubjects.RequiredSubjects";
+                    result.SqlParams.Add(model.RequiredSubjects);
+                }
             }
             if (commandWhereList.Any())
             {
@@ -74,6 +86,10 @@ namespace Project.Repository
             if (leftJoinCommandTime.Any())
             {
                 leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_Time ON Course.CourseID = Course_Time.CourseID " + string.Join(Environment.NewLine + " AND ", leftJoinCommandTime));
+            }
+            else if (commandTime.Length > 0)
+            {
+                leftJoinCommandWhere.AppendLine(" LEFT JOIN Course_Time ON Course.CourseID = Course_Time.CourseID ");
             }
             #endregion
 
@@ -87,8 +103,7 @@ namespace Project.Repository
 						 , Week
                          , Time
 						 , ProfessorName
-						 , RequiredSubjects
-						 , StudentNumberLimit"
+						 , RequiredSubjects"
                              , requiredSubjects
                              , commandTime.ToString()
                              , " FROM Course "
@@ -100,11 +115,8 @@ namespace Project.Repository
                 commandText.AppendLine(string.Join(Environment.NewLine,
                                   @"SELECT CourseTitle
 						             , CourseIntroduction
-						             , Week
-                                     , Time
 						             , ProfessorName
 						             , RequiredSubjects
-						             , StudentNumberLimit
                                      , Course_Time.Week
                                      , Course_Time.Time
                                      , Course_RequiredSubjects.RequiredSubjects
@@ -122,79 +134,32 @@ namespace Project.Repository
 
         private RepositoryModel InsertCourseSql(CourseDataModel model)
         {
-            var result = new RepositoryModel();
             StringBuilder commandText = new StringBuilder();
-            List<string> commandWhereList = new List<string>();
-            string commandWhere = string.Empty;
+            var result = new RepositoryModel();
 
             #region WHERE
-
-            if (model.CourseID != null)
-            {
-                commandWhereList.Add("CourseID = {CourseID}");
-                result.SqlParams.Add(model.CourseTitle);
-            }
-            if (model.CourseTitle != null)
-            {
-                commandWhereList.Add("CourseTitle = {CourseTitle}");
-                result.SqlParams.Add(model.CourseTitle);
-            }
-            if (model.CourseIntroduction != null)
-            {
-                commandWhereList.Add("CourseIntroduction = {CourseIntroduction}");
-                result.SqlParams.Add(model.CourseIntroduction);
-            }
-            if (model.Week != null)
-            {
-                commandWhereList.Add("Week = {Week}");
-                result.SqlParams.Add(model.Week);
-            }
-            if (model.Time != null)
-            {
-                commandWhereList.Add("Time = {Time}");
-                result.SqlParams.Add(model.Time);
-            }
-            if (model.ProfessorName != null)
-            {
-                commandWhereList.Add("ProfessorName = {ProfessorName}");
-                result.SqlParams.Add(model.ProfessorName);
-            }
-            if (model.RequiredSubjects != null)
-            {
-                commandWhereList.Add("RequiredSubjects = {RequiredSubjects}");
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (model.StudentNumberLimit != 0)
-            {
-                commandWhereList.Add("StudentNumberLimit = {StudentNumberLimit}");
-                result.SqlParams.Add(model.StudentNumberLimit);
-            }
-            if (model.RequiredStudentNumber != 0)
-            {
-                commandWhereList.Add("RequiredStudentNumber = {RequiredStudentNumber}");
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (commandWhereList.Any())
-            {
-                commandWhere = (" WHERE " + string.Join(Environment.NewLine + "   AND ", commandWhereList));
-            }
             #endregion
 
             commandText.AppendLine(string.Join(Environment.NewLine,
                 @"
-					SELECT CourseTitle
-						 , CourseIntroduction
-						 , ClassTime_Week
-                         , ClassTime_Time
-						 , ProfessorName
-						 , RequiredSubjects
-						 , StudentNumberLimit
-						 , RequiredStudentNumber
-						 , IsAuditCourse
-					  FROM Course
-                ", commandWhere));
+                INSERT INTO Course ( CourseID
+						           , CourseTitle
+						           , CourseIntroduction
+                                   , ProfessorName
+                                   )
+                            VALUES ( @CourseID
+                                   , @CourseTitle
+                                   , @CourseIntroduction
+                                   , @ProfessorName
+                                   ); 
+            "));
+            SetTransaction(ref commandText);
 
             result.SqlString = commandText.ToString();
+            result.SqlParams.Add(model.CourseID);
+            result.SqlParams.Add(model.CourseTitle);
+            result.SqlParams.Add(model.CourseIntroduction);
+            result.SqlParams.Add(model.ProfessorName);
 
             return result;
         }
@@ -203,76 +168,36 @@ namespace Project.Repository
         {
             var result = new RepositoryModel();
             StringBuilder commandText = new StringBuilder();
-            List<string> commandWhereList = new List<string>();
-            string commandWhere = string.Empty;
+            List<string> commandSetList = new List<string>();
+            string commandSet = string.Empty;
 
-            #region WHERE
-
-            if (model.CourseID != null)
-            {
-                commandWhereList.Add("CourseID = {CourseID}");
-                result.SqlParams.Add(model.CourseTitle);
-            }
+            #region Set
             if (model.CourseTitle != null)
             {
-                commandWhereList.Add("CourseTitle = {CourseTitle}");
+                commandSetList.Add("CourseTitle = @CourseTitle");
                 result.SqlParams.Add(model.CourseTitle);
             }
             if (model.CourseIntroduction != null)
             {
-                commandWhereList.Add("CourseIntroduction = {CourseIntroduction}");
+                commandSetList.Add("CourseIntroduction = @CourseIntroduction");
                 result.SqlParams.Add(model.CourseIntroduction);
-            }
-            if (model.Week != null)
-            {
-                commandWhereList.Add("Week = {Week}");
-                result.SqlParams.Add(model.Week);
-            }
-            if (model.Time != null)
-            {
-                commandWhereList.Add("Time = {Time}");
-                result.SqlParams.Add(model.Time);
             }
             if (model.ProfessorName != null)
             {
-                commandWhereList.Add("ProfessorName = {ProfessorName}");
+                commandSetList.Add("ProfessorName = @ProfessorName");
                 result.SqlParams.Add(model.ProfessorName);
             }
-            if (model.RequiredSubjects != null)
+            if (commandSetList.Any())
             {
-                commandWhereList.Add("RequiredSubjects = {RequiredSubjects}");
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (model.StudentNumberLimit != 0)
-            {
-                commandWhereList.Add("StudentNumberLimit = {StudentNumberLimit}");
-                result.SqlParams.Add(model.StudentNumberLimit);
-            }
-            if (model.RequiredStudentNumber != 0)
-            {
-                commandWhereList.Add("RequiredStudentNumber = {RequiredStudentNumber}");
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (commandWhereList.Any())
-            {
-                commandWhere = (" WHERE " + string.Join(Environment.NewLine + "   AND ", commandWhereList));
+                commandSet = (" SET " + string.Join(Environment.NewLine + " , ", commandSetList));
             }
             #endregion
-
             commandText.AppendLine(string.Join(Environment.NewLine,
-                @"
-					SELECT CourseTitle
-						 , CourseIntroduction
-						 , ClassTime_Week
-                         , ClassTime_Time
-						 , ProfessorName
-						 , RequiredSubjects
-						 , StudentNumberLimit
-						 , RequiredStudentNumber
-						 , IsAuditCourse
-					  FROM Course
-                ", commandWhere));
-
+                "UPDATE Course "
+                      , commandSet
+                      , "WHERE CourseID = @CourseID"));
+            result.SqlParams.Add(model.CourseID);
+            SetTransaction(ref commandText);
             result.SqlString = commandText.ToString();
 
             return result;
@@ -282,76 +207,18 @@ namespace Project.Repository
         {
             var result = new RepositoryModel();
             StringBuilder commandText = new StringBuilder();
-            List<string> commandWhereList = new List<string>();
-            string commandWhere = string.Empty;
-
-            #region WHERE
-
-            if (model.CourseID != null)
-            {
-                commandWhereList.Add("CourseID = {CourseID}");
-                result.SqlParams.Add(model.CourseTitle);
-            }
-            if (model.CourseTitle != null)
-            {
-                commandWhereList.Add("CourseTitle = {CourseTitle}");
-                result.SqlParams.Add(model.CourseTitle);
-            }
-            if (model.CourseIntroduction != null)
-            {
-                commandWhereList.Add("CourseIntroduction = {CourseIntroduction}");
-                result.SqlParams.Add(model.CourseIntroduction);
-            }
-            if (model.Week != null)
-            {
-                commandWhereList.Add("Week = {Week}");
-                result.SqlParams.Add(model.Week);
-            }
-            if (model.Time != null)
-            {
-                commandWhereList.Add("Time = {Time}");
-                result.SqlParams.Add(model.Time);
-            }
-            if (model.ProfessorName != null)
-            {
-                commandWhereList.Add("ProfessorName = {ProfessorName}");
-                result.SqlParams.Add(model.ProfessorName);
-            }
-            if (model.RequiredSubjects != null)
-            {
-                commandWhereList.Add("RequiredSubjects = {RequiredSubjects}");
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (model.StudentNumberLimit != 0)
-            {
-                commandWhereList.Add("StudentNumberLimit = {StudentNumberLimit}");
-                result.SqlParams.Add(model.StudentNumberLimit);
-            }
-            if (model.RequiredStudentNumber != 0)
-            {
-                commandWhereList.Add("RequiredStudentNumber = {RequiredStudentNumber}");
-                result.SqlParams.Add(model.RequiredSubjects);
-            }
-            if (commandWhereList.Any())
-            {
-                commandWhere = (" WHERE " + string.Join(Environment.NewLine + "   AND ", commandWhereList));
-            }
-            #endregion
 
             commandText.AppendLine(string.Join(Environment.NewLine,
-                @"
-					SELECT CourseTitle
-						 , CourseIntroduction
-						 , ClassTime_Week
-                         , ClassTime_Time
-						 , ProfessorName
-						 , RequiredSubjects
-						 , StudentNumberLimit
-						 , RequiredStudentNumber
-						 , IsAuditCourse
-					  FROM Course
-                ", commandWhere));
+                @"  DELETE FROM Course
+                     WHERE CourseID = @CourseID
+                    DELETE FROM Course_Time
+                     WHERE CourseID = @CourseID
+                    DELETE FROM Course_RequiredSubjects
+                     WHERE CourseID = @CourseID
+                "));
 
+            result.SqlParams.Add(model.CourseID);
+            SetTransaction(ref commandText);
             result.SqlString = commandText.ToString();
 
             return result;

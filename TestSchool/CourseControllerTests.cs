@@ -1,5 +1,6 @@
 using Project.Controllers;
 using Project.Model;
+using Project.Util;
 
 namespace Project.Tests
 {
@@ -7,37 +8,83 @@ namespace Project.Tests
     public class CourseControllerTests
     {
         [TestMethod]
-        public void Test_FullSearch_Success()
+        public void GetCourseList_Success()
         {
             // 安排 (Arrange)
             var controller = new CourseController();
             var courseDataModel = new CourseDataModel();
-
+            
+            string courseID = "課程ID",
+                courseTitle = "課程名稱",
+                week = "星期幾",
+                time = "HHmm-HHmm",
+                professorName = "授課講師",
+                requiredSubjects = "必修科系";
             // 行動 (Act)
-            var response = controller.Get(courseDataModel);
+            var response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
 
+            requiredSubjects = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
+
+            requiredSubjects = "必修科系";
+            professorName = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
+
+            professorName = "授課講師";
+            time = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
+
+            time = "HHmm-HHmm";
+            week = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
+
+            week = "星期幾";
+            courseTitle = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
+
+            courseTitle = "課程名稱";
+            courseID = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
+            Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
+
+            courseID = null;
+            courseTitle = null;
+            week = null;
+            time = null;
+            professorName = null;
+            requiredSubjects = null;
+            response = controller.Get(courseID, courseTitle, week, time, professorName, requiredSubjects);
             // 斷言 (Assert)
             Assert.IsNotNull(response);
+            Assert.AreEqual(ReturnData.EnumReturnMessage.Success.GetEnumDesc(), response.Msg);
         }
-        public void Test_LimitSearch_Success()
+        public void Test_InsertCourse_Success()
         {
             // 安排 (Arrange)
             var controller = new CourseController();
             var courseDataModel = new CourseDataModel()
             {
-                CourseTitle = "測試",
-                CourseIntroduction = "測試",
-                Week = "測試",
-                Time = "測試",
-                ProfessorName = "測試",
-                RequiredSubjects = "測試",
-                StudentNumberLimit = 1,
-                RequiredStudentNumber = 2,
-                IsNotAuditCourse = true,
+                CourseID= "課程ID",
+                CourseTitle = "課程名稱",
+                CourseIntroduction = "課程簡介",
+                ProfessorName = "授課講師",
             };
 
             // 行動 (Act)
-            var response = controller.Post(new CourseDataModel());
+            var response = controller.POST(courseDataModel);
 
             // 斷言 (Assert)
             Assert.IsNotNull(response);

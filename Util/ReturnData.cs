@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿using DescriptionAttribute = System.ComponentModel.DescriptionAttribute;
 
 namespace Project.Util
 {

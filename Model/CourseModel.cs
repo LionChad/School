@@ -3,7 +3,7 @@ using Project.Util;
 
 namespace Project.Model
 {
-    public class GetCourseModel
+    public class CourseModel
     {
         #region 取得課程列表
         /// <summary>
@@ -11,9 +11,9 @@ namespace Project.Model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public GetCourseListResponseModel GetCourseList(CourseDataModel model)
+        public GetCourseListResponse GetCourseList(CourseDataModel model)
         {
-            var result = new GetCourseListResponseModel();
+            var result = new GetCourseListResponse();
 
             try
             {
@@ -25,9 +25,7 @@ namespace Project.Model
                     model.Week != null &&
                     model.Time != null &&
                     model.ProfessorName != null &&
-                    model.RequiredSubjects != null &&
-                    model.StudentNumberLimit != 0 &&
-                    model.RequiredStudentNumber != 0)
+                    model.RequiredSubjects != null)
                 {
                     result.Data.Add(new CourseDataModel
                     {
@@ -50,6 +48,62 @@ namespace Project.Model
                     });
                     result.Data.Add(model);
                 }
+
+                result.Code = (int)ReturnData.EnumReturnMessage.Success;
+                result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
+            }
+            catch (Exception ex)
+            {
+                //紀錄Log
+                result.Code = (int)ReturnData.EnumReturnMessage.SystemError;
+                result.Msg = ReturnData.EnumReturnMessage.SystemError.GetEnumDesc();
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 取得課程時間列表
+        /// <summary>
+        /// 取得課程時間列表
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public GetCourseTimeResponse GetCourseTimeList(CourseTimeDataModel model)
+        {
+            var result = new GetCourseTimeResponse();
+
+            try
+            {
+                //result.Data = new CourseRepository().GetCourseTimeList(model);
+
+                result.Code = (int)ReturnData.EnumReturnMessage.Success;
+                result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
+            }
+            catch (Exception ex)
+            {
+                //紀錄Log
+                result.Code = (int)ReturnData.EnumReturnMessage.SystemError;
+                result.Msg = ReturnData.EnumReturnMessage.SystemError.GetEnumDesc();
+            }
+
+            return result;
+        }
+        #endregion
+
+        #region 取得必修課程列表
+        /// <summary>
+        /// 取得必修課程列表
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public GetCourseRequiredSubjectsListResponse GetCourseRequiredSubjectsList(CourseRequiredSubjectsDataModel model)
+        {
+            var result = new GetCourseRequiredSubjectsListResponse();
+
+            try
+            {
+                //result.Data = new CourseRepository().GetCourseRequiredSubjectsList(model);
 
                 result.Code = (int)ReturnData.EnumReturnMessage.Success;
                 result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
@@ -101,21 +155,27 @@ namespace Project.Model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseModel UpdateCourse(CourseDataModel model)
+        public EditResponseModel UpdateCourse(CourseDataModel model)
         {
-            var response = new ResponseModel();
+            var result = new EditResponseModel();
 
             try
             {
-                response.code = new CourseRepository().UpdateCourse(model);
+                if (new CourseRepository().UpdateCourse(model))
+                {
+                    result.Data = true;
+                    result.Code = (int)ReturnData.EnumReturnMessage.Success;
+                    result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
+                }
             }
             catch (Exception ex)
             {
                 //紀錄Log
-                response.msg = ex.Message;
+                result.Code = (int)ReturnData.EnumReturnMessage.SystemError;
+                result.Msg = ReturnData.EnumReturnMessage.SystemError.GetEnumDesc();
             }
 
-            return response;
+            return result;
         }
         #endregion
 
@@ -125,21 +185,27 @@ namespace Project.Model
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public ResponseModel DeleteCourse(CourseDataModel model)
+        public EditResponseModel DeleteCourse(CourseDataModel model)
         {
-            var response = new ResponseModel();
+            var result = new EditResponseModel();
 
             try
             {
-                response.code = new CourseRepository().DeleteCourse(model);
+                if (new CourseRepository().DeleteCourse(model))
+                {
+                    result.Data = true;
+                    result.Code = (int)ReturnData.EnumReturnMessage.Success;
+                    result.Msg = ReturnData.EnumReturnMessage.Success.GetEnumDesc();
+                }
             }
             catch (Exception ex)
             {
                 //紀錄Log
-                response.msg = ex.Message;
+                result.Code = (int)ReturnData.EnumReturnMessage.SystemError;
+                result.Msg = ReturnData.EnumReturnMessage.SystemError.GetEnumDesc();
             }
 
-            return response;
+            return result;
         }
         #endregion
     }

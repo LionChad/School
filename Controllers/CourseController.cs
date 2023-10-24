@@ -9,7 +9,7 @@ namespace Project.Controllers
     public class CourseController : ControllerBase
     {
         [HttpGet]
-        public GetCourseListResponseModel Get(string courseID, string courseTitle, string week, string time, string professorName, string requiredSubjects, bool isNotAuditCourse)
+        public GetCourseListResponse Get(string courseID, string courseTitle, string week, string time, string professorName, string requiredSubjects)
         {
             CourseDataModel model = new CourseDataModel()
             {
@@ -21,7 +21,7 @@ namespace Project.Controllers
                 RequiredSubjects = requiredSubjects,
             };
 
-            var reponse = new GetCourseModel().GetCourseList(model);
+            var reponse = new CourseModel().GetCourseList(model);
 
             return reponse;
         }
@@ -37,11 +37,9 @@ namespace Project.Controllers
                 {
                     if (!string.IsNullOrEmpty(model.CourseID) &&
                         !string.IsNullOrEmpty(model.CourseTitle) &&
-                        !string.IsNullOrEmpty(model.Week) &&
-                        !string.IsNullOrEmpty(model.Time) &&
                         !string.IsNullOrEmpty(model.ProfessorName))
                     {
-                        reponse = new GetCourseModel().InsertCourse(model);
+                        reponse = new CourseModel().InsertCourse(model);
                     }
                     else
                     {
@@ -76,12 +74,9 @@ namespace Project.Controllers
                     if (!string.IsNullOrEmpty(model.CourseID) &&
                          (!string.IsNullOrEmpty(model.CourseTitle) ||
                          !string.IsNullOrEmpty(model.CourseIntroduction) ||
-                         !string.IsNullOrEmpty(model.Week) ||
-                         !string.IsNullOrEmpty(model.Time) ||
-                         !string.IsNullOrEmpty(model.ProfessorName) ||
-                         !string.IsNullOrEmpty(model.RequiredSubjects)))
+                         !string.IsNullOrEmpty(model.ProfessorName)))
                     {
-                        reponse = new GetCourseModel().UpdateCourse(model);
+                        reponse = new CourseModel().UpdateCourse(model);
                     }
                     else
                     {
@@ -104,7 +99,7 @@ namespace Project.Controllers
             return reponse;
         }
 
-        [HttpPatch]
+        [HttpDelete]
         public EditResponseModel DELETE(CourseDataModel model)
         {
             var reponse = new EditResponseModel();
@@ -115,7 +110,7 @@ namespace Project.Controllers
                 {
                     if (model.CourseID != null)
                     {
-                        reponse = new GetCourseModel().DeleteCourse(model);
+                        reponse = new CourseModel().DeleteCourse(model);
                     }
                     else
                     {
