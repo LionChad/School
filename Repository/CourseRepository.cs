@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 
 namespace Project.Repository
 {
-    public partial class CourseRepository
+    public partial class CourseRepository : ICourseRepository
     {
         #region 取得 課程 清單
         /// <summary>

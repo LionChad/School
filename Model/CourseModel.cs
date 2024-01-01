@@ -5,6 +5,15 @@ namespace Project.Model
 {
     public class CourseModel
     {
+        private readonly ICourseRepository _courseRepository;
+        public CourseModel()
+        {
+        }
+
+        public CourseModel(ICourseRepository courseRepository)
+        {
+            _courseRepository = courseRepository;
+        }
         #region 取得課程列表
         /// <summary>
         /// 取得課程列表
