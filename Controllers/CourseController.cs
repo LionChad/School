@@ -4,7 +4,7 @@ using Project.Util;
 
 namespace Project.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/{courseID}")]
     [ApiController]
     public class CourseController : ControllerBase
     {
